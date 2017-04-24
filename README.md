@@ -1,6 +1,7 @@
 # rumor-app
 
 A simple web application that allows users to create posts if they are registered and logged in. 
+
 Users are able to view posts without logging in, but not interact with them in any other way.
 
 ## Installation
