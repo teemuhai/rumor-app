@@ -4,7 +4,7 @@
 		method: 'POST',
 		body: data
 	}).then((resp) => {
-		console.log('got response');
+		console.log('got register response');
 	});
 }
 	const login = (data) => {
@@ -13,8 +13,18 @@
 			method: 'POST',
 			body: data
 		}).then((resp) => {
-			console.log('got response');
+			console.log('got login response ' + resp.auth);
 		});
 	}
-	const Client = {register, login};
+
+	const post = (data) => {
+		console.log('got to post method');
+		fetch('/post', {
+			method: 'POST',
+			body: data
+		}).then((resp) => {
+			console.log('got post response');
+		});
+	}
+	const Client = {register, login, post};
 export default Client;

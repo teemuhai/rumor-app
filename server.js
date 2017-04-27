@@ -11,6 +11,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const PostCard = require('./database/models/postCard.js');
 
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
@@ -64,21 +65,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
 
-app.post('/register', upload.single('avatar'), (req, res) => {
-	console.log('got a register request');
-	console.log(req.body.username);
-	const newUser = new User({
-		username:req.body.username,
-		email: req.body.email,
-		password: req.body.password
-	});
-	console.log(newUser);
-	User.createUser(newUser, (err, user) => {
-			if(err) throw err;
-			console.log(user);
-			console.log('registeration succesful');
-		});
-});
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
@@ -109,13 +95,38 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+app.post('/register', upload.single('avatar'), (req, res) => {
+  console.log('got a register request');
+  console.log(req.body.username);
+  const newUser = new User({
+    username:req.body.username,
+    email: req.body.email,
+    password: req.body.password
+  });
+  console.log(newUser);
+  User.createUser(newUser, (err, user) => {
+      if(err) throw err;
+      console.log(user);
+      console.log('registeration succesful');
+    });
+  res.send({status: 'OK', user: user});
+});
+
 app.post('/login', upload.single('avatar'),
   passport.authenticate('local'),
   (req, res) => {
     //res.redirect('/');
     console.log('Authentication succesful');
-    res.send({status: 'OK', authentication: true});
+    res.send({status: 'OK', auth: true});
   });
+
+app.post('/post', upload.single('postImage'), (req, res) => {
+  console.log('got a postCard request');
+  console.log(req.body);
+  /*const newPostCard = new PostCard({
+
+  })*/
+});
 
 
 

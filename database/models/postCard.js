@@ -1,36 +1,39 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
-const userSchema = mongoose.Schema({
-	username: { type: String,
+const postCardSchema = mongoose.Schema({
+	title: { type: String,
 				index: true },
-	password: { type: String },
-	email: { type: String }
+	image: { type: String },
+	description: { type: String },
+	date: { type: String },
+	userId: {type: String }
 });
 
-const User = module.exports = mongoose.model('User', userSchema);
+const PostCard = module.exports = mongoose.model('PostCard', postCardSchema);
 
-module.exports.createUser = (newUser, callback) => {
-	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(newUser.password, salt, function(err, hash) {
-	        newUser.password = hash;
-	        newUser.save(callback);
-	    });
-	});
+module.exports.createPostCard = (newPostCard, callback) => {
+	newPostCard.save(function (err) {
+  if (err) return handleError(err);
+  // saved!
+  console.log('PostCard saved to database');
+});
+
 }
 
-module.exports.getUserByUsername = (username, callback) => {
+/*
+module.exports.getPostCardByName = (postCardName, callback) => {
 	var query = {username: username};
 	User.findOne(query, callback);
+}*/
+
+module.exports.getPostCardById = (id, callback) => {
+	PostCard.findById(id, callback);
 }
 
-module.exports.getUserById = (id, callback) => {
-	User.findById(id, callback);
-}
-
+/*
 module.exports.comparePassword = (candidatePassword, hash, callback) => {
 	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
     	if(err) throw err;
     	callback(null, isMatch);
 	});
-}
+}*/
