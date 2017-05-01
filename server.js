@@ -106,10 +106,9 @@ app.post('/register', upload.single('avatar'), (req, res) => {
   console.log(newUser);
   User.createUser(newUser, (err, user) => {
       if(err) throw err;
-      console.log(user);
       console.log('registeration succesful');
     });
-  res.send({status: 'OK', user: user});
+  res.send({status: 'OK'});
 });
 
 app.post('/login', upload.single('avatar'),
@@ -117,16 +116,34 @@ app.post('/login', upload.single('avatar'),
   (req, res) => {
     //res.redirect('/');
     console.log('Authentication succesful');
-    res.send({status: 'OK', auth: true});
+    res.send({status: 'OK', auth: true, user: req.user});
+    res.send({auth: false});
   });
 
 app.post('/post', upload.single('postImage'), (req, res) => {
   console.log('got a postCard request');
   console.log(req.body);
-  /*const newPostCard = new PostCard({
-
-  })*/
+  const newPostCard = new PostCard({
+    title: req.body.title,
+    description: req.body.description,
+    time: req.body.time
+  });
+  console.log('newPostCard here: ' + newPostCard);
+  PostCard.createPostCard(newPostCard, (err, card) => {
+      if(err) throw err;
+      console.log('is this card? ' + card);
+      console.log('Created post to database!');
+    });
+  res.send({status: 'OK'});
 });
 
+
+app.get('/posts', (req, res) =>{
+  console.log('received a getPosts request');
+  PostCard.getPostCards().then((posts) => {
+    console.log(posts);
+    res.send(posts);
+  });
+});
 
 

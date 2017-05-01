@@ -3,19 +3,22 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './components/Login';
 import Register from './components/Register';
-import Post from './components/Post';
+import NavBar from './components/Navbar';
+import Feed from './components/Feed';
+import JumboTron from './components/Jumbotron';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <h2>Welcome to rumor son of rumor</h2>
-        </div>
-        <Register />
+    {/* <Register />
         <Login />
         <br />
         <Post />
+      */} 
+      <NavBar />
+      <JumboTron />
+      <Feed />
       </div>
     );
   }

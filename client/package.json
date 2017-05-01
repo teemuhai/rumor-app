@@ -4,10 +4,15 @@
   "private": true,
   "proxy": "https://localhost:3001/",
   "dependencies": {
+    "bootstrap": "^4.0.0-alpha.6",
     "moment": "^2.18.1",
     "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.5.2",
+    "react-addons-transition-group": "^15.5.2",
     "react-dom": "^15.5.4",
-    "react-file-input": "^0.2.5"
+    "react-file-input": "^0.2.5",
+    "react-transition-group": "^1.1.2",
+    "reactstrap": "^4.5.0"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

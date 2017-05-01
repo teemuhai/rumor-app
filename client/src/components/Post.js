@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Client from '../Client.js';
 import FileInput from 'react-file-input';
-const FileInputX = require('react-file-input');
+import { Form, FormGroup, Input, Row, Col, Button } from 'reactstrap';
 const moment = require('moment');
 
 export default class Post extends Component {
@@ -10,19 +10,32 @@ export default class Post extends Component {
 		const data = new FormData(e.target);
 				for (var pair of data.entries()) {
     console.log(pair[0]+ ', ' + pair[1]); 
-}
+} const time = moment().format('MMMM Do YYYY, h:mm a');
+data.append('time', time)
 Client.post(data);
 	}
 
 	render(){
 		return (
 			<div>
-			<form onSubmit={this.handleSubmit}>
-			<input name="title" placeholder="Title"/>
-			<input name="description" placeholder="Description"/>
-			<FileInput />
-			<input type="submit" value="Submit"/>
-			</form>
+			<Row>
+			<Col sm="12" md={{ size: 8, offset: 2 }}>
+			<Form onSubmit={this.handleSubmit}>
+			<FormGroup>
+				<Input name="title" placeholder="Title"/>
+			</FormGroup>
+			<FormGroup>
+				<Input name="description" type="textarea" placeholder="Description"/>
+			</FormGroup>
+			<FormGroup>
+				<FileInput placeholder="Add Image..." />
+			</FormGroup>
+			<FormGroup>
+				<Button type="submit" color="primary">Submit</Button>
+			</FormGroup>
+			</Form>
+			</Col>
+			</Row>
 			</div>
 			);
 	}
