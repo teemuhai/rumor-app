@@ -8,6 +8,7 @@ class Client extends EventEmitter {
 		this.posts = [];
 		this.auth = false;
 		this.user = {};
+		this.userPosts = [];
 	}
 
 	register(data){
@@ -58,6 +59,13 @@ class Client extends EventEmitter {
 			console.log('resp json:' + resp);
 		});
 	}
+	getUser(){
+		return this.user;
+	}
+
+	getUserPosts(){
+		return this.userPosts;
+	}
 	
 	getAll(){
 		return this.posts;
@@ -72,8 +80,16 @@ class Client extends EventEmitter {
 				this.posts = action.posts;
 				this.emit('change');
 				break;
+			case 'RECEIVED_USER_POSTS':
+				this.userPosts = action.posts;
+				break;
 			case 'DELETE_POSTS':
 				this.emit('change');
+				break;
+			case 'LOGIN_USER':
+				this.user = action.user;
+				this.auth = action.auth;
+				break;
 		}
 	}
 }

@@ -6,7 +6,7 @@ const postCardSchema = mongoose.Schema({
 	image: { type: String, default: '.../images/default'},
 	description: { type: String },
 	time: { type: String },
-	userId: {type: String, default: '123' }
+	user: {type: Object, default: {username: 'testUser', id: 123}}
 });
 
 const PostCard = module.exports = mongoose.model('PostCard', postCardSchema);

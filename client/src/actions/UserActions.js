@@ -1,6 +1,6 @@
-import dispatcher from './dispatcher';
+import dispatcher from '../dispatcher';
 
-export function createPost(data){
+export function createUser(data){
 	console.log('got to post method');
 		fetch('/post', {
 			method: 'POST',
@@ -12,7 +12,6 @@ export function createPost(data){
 			}
 		}).then((resp) => {
 			console.log('resp json:' + resp);
-			getPosts();
 		});
 	/* 	dispatcher.dispatch({
 		type: 'CREATE_POST',
@@ -26,19 +25,37 @@ export function deletePost(id){
 		id,
 	});
 }
+export function loginPost(data){
+		console.log('got to login method');
+		fetch('/login', {
+			method: 'POST',
+			body: data
+		}).then((resp) => {
+			console.log('got login response ');
+			return resp.json();
+		}).then((resp) => {
+			console.log(resp);
+			dispatcher.dispatch({
+				type: 'LOGIN_USER',
+				user: resp.user,
+				auth: resp.auth
+			});
+		});
+}
 
-export function getPosts(){
+export function getUserPosts(data){
 	console.log('got to getPosts method');
-		fetch('/posts', {
-			method: 'GET'
+		fetch('/userposts', {
+			method: 'POST',
+			body: data
 		}).then((resp) => {
 			console.log('got response');
 			return resp.json();
 		}).then((resp) => {
 			console.log(resp);
 			dispatcher.dispatch({
-			type: 'RECEIVED_POSTS', 
-			posts: resp,
+			type: 'RECEIVED_USER_POSTS', 
+			posts: resp.posts
 		});
 	});
 }

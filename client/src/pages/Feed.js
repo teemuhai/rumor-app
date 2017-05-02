@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Client from '../Client.js';
 import { Container, Row, Col } from 'reactstrap';
-import Card from './Card';
-import Post from './Post';
-import * as PostActions from '../PostActions';
+import Card from '../components/Card';
+import Post from '../components/Post';
+import * as PostActions from '../actions/PostActions';
 
 export default class Feed extends Component {
 	constructor(){
@@ -29,7 +29,7 @@ export default class Feed extends Component {
 	}
 
 	componentWillUnmount(){
-		Client.unbindListener('change', this.getPosts);
+		Client.removeListener('change', this.getPosts);
 	}
 	render(){
 		console.log(this.state.posts);
@@ -39,7 +39,6 @@ export default class Feed extends Component {
 		console.log('rendering feed here');
 		return (
 			<Container>
-			<Post />
 			{Cards}
 			</Container>
 			);

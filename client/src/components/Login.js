@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Client from '../Client.js';
+import * as UserActions from '../actions/UserActions';
 
 export default class Login extends Component {
 	handleSubmit(e){
@@ -9,7 +10,7 @@ export default class Login extends Component {
 		for (var pair of data.entries()) {
     console.log(pair[0]+ ', ' + pair[1]); 
 }
-		Client.login(data);
+		UserActions.loginPost(data);
 	}
 
 	render(){

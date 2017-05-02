@@ -5,6 +5,7 @@ import { Card, CardImg, CardText, CardBlock, CardLink,
 export default class PostCard extends Component {
 	onBtnClick(){
 		//show the post only with comments
+		
 	}
 
 	render(){

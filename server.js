@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const passport = require('passport');
@@ -38,9 +39,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser());
 app.use(cookieParser());
+app.use(session({
+    secret: 'secret',
+    saveUninitialized: true,
+    resave: true
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -116,8 +124,8 @@ app.post('/login', upload.single('avatar'),
   (req, res) => {
     //res.redirect('/');
     console.log('Authentication succesful');
+    req.session.user = req.user;
     res.send({status: 'OK', auth: true, user: req.user});
-    res.send({auth: false});
   });
 
 app.post('/post', upload.single('postImage'), (req, res) => {
@@ -137,6 +145,20 @@ app.post('/post', upload.single('postImage'), (req, res) => {
   res.send({status: 'OK'});
 });
 
+app.post('/userposts', (req, res) => {
+  console.log('go to userposts request');
+  console.log(req.user);
+  PostCard.findOne({ user : {username: 'testUser', id: 123}}).exec((err, results) => {
+    if(err) throw err;
+    console.log(results);
+    res.send({posts: results});
+  });
+});
+
+app.get('/logout', (req,res) => {
+  req.logout();
+  res.send({status: 'OK', logout: true});
+});
 
 app.get('/posts', (req, res) =>{
   console.log('received a getPosts request');
