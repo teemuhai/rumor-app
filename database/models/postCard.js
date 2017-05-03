@@ -6,7 +6,9 @@ const postCardSchema = mongoose.Schema({
 	image: { type: String, default: '.../images/default'},
 	description: { type: String },
 	time: { type: String },
-	user: {type: Object, default: {username: 'testUser', id: 123}}
+	user: {type: Object, default: {username: 'testUser', id: 123}},
+	comments: [{comment: String,
+				user: String}]
 });
 
 const PostCard = module.exports = mongoose.model('PostCard', postCardSchema);
@@ -18,6 +20,14 @@ module.exports.createPostCard = (newPostCard, callback) => {
   console.log('PostCard saved to database');
 });
 
+}
+
+module.exports.updatePostCard = (data, callback) => {
+	PostCard.update(
+    { _id: data.id },
+    { $push: {comments: {comment: data.comment, user: data.user}}}
+    );
+    console.log('Comment added?');
 }
 
 /*

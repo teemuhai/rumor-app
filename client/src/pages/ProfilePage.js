@@ -52,7 +52,9 @@ export default class ProfilePage extends Component {
 			</Col>
 			TODO: 
 			image uploading with multer working in server(see sssf-week2)
+			<br/>
 			User's own posts on profile page and delete functionality for them
+			<br/>
 			Commenting on feed page cards, includes patch requests and server update postCard object.
         	</Row>
 			</div>

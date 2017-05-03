@@ -41,7 +41,7 @@ const upload = multer({storage: storage});
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true})); 
 app.use(bodyParser());
 app.use(cookieParser());
 app.use(session({
@@ -145,7 +145,7 @@ app.post('/post', upload.single('postImage'), (req, res) => {
   res.send({status: 'OK'});
 });
 
-app.post('/userposts', (req, res) => {
+app.post('/userposts',  upload.single('somePostImg'), (req, res) => {
   console.log('go to userposts request');
   console.log(req.user);
   PostCard.findOne({ user : {username: 'testUser', id: 123}}).exec((err, results) => {
@@ -153,6 +153,12 @@ app.post('/userposts', (req, res) => {
     console.log(results);
     res.send({posts: results});
   });
+});
+
+app.post('/comment', (req, res) => {
+  console.log('got to comment post');
+  console.log(req.body);
+  PostCard.updatePostCard(req.body);
 });
 
 app.get('/logout', (req,res) => {

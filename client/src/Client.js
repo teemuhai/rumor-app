@@ -60,6 +60,7 @@ class Client extends EventEmitter {
 		});
 	}
 	getUser(){
+		
 		return this.user;
 	}
 

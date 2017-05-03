@@ -24,17 +24,13 @@ export default class Feed extends Component {
 		});
 	}
 
-	createPost(){
-		PostActions.createPost('this is a new post!');
-	}
-
 	componentWillUnmount(){
 		Client.removeListener('change', this.getPosts);
 	}
 	render(){
 		console.log(this.state.posts);
 		const Cards = this.state.posts.map((post, i) => {
-			return <Card key={i} image={post.image} title={post.title} text={post.description} time={post.time} by={post.userId}/>
+			return <Card  comments={post.comments} id={post._id} key={i} image={post.image} title={post.title} text={post.description} time={post.time} by={post.userId}/>
 		});
 		console.log('rendering feed here');
 		return (

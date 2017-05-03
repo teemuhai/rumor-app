@@ -14,10 +14,23 @@ export function createPost(data){
 			console.log('resp json:' + resp);
 			getPosts();
 		});
-	/* 	dispatcher.dispatch({
+	 	/*dispatcher.dispatch({
 		type: 'CREATE_POST',
 		text,
 	});*/
+}
+
+export function commentPost(data){
+	console.log(data);
+	console.log('got to commentPost method');
+	fetch('/comment', {
+		method: 'PATCH',
+		body: data
+	}).then((resp) => {
+		return resp.json();
+	}).then((resp) => {
+		console.log(resp);
+	});
 }
 
 export function deletePost(id){
