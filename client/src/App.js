@@ -20,7 +20,7 @@ class App extends Component {
       <Router history={hashHistory}>
       <div>
       <NavBar />
-      <Route path="/home" component={JumboTron}/>
+      <Route exact path="/" component={JumboTron}/>
       <Route path="/feed" component={Feed}/>
       <Route path="/login" component={LoginPage}/>
       <Route path="/newpost" component={PostPage}/>

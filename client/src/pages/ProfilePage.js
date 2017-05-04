@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import Card from '../components/Card';
+import UserCard from '../components/UserCard';
 import Client from '../Client';
 import * as UserActions from '../actions/UserActions';
-import {Row, Col, Media, Button} from 'reactstrap';
+import {Row, Col, Media, Button, Container} from 'reactstrap';
 
 export default class ProfilePage extends Component {
 	constructor(){
 		super();
+		const data = {
+			userId: Client.getUser()._id
+		}
+		UserActions.getUser();
+		UserActions.getUserPosts(data);
 		this.getUser = this.getUser.bind(this);
 		this.getUserPosts = this.getUserPosts.bind(this);
 		this.state = {
@@ -33,30 +38,33 @@ export default class ProfilePage extends Component {
 		});
 	}
 	onBtnClick(){
-		UserActions.getUserPosts();
+		const data = {
+			userId: Client.getUser()._id
+		}
+		UserActions.getUserPosts(data);
 	}
 
 	render(){
+		const UserCards = this.state.userPosts.map((post, i) => {
+			return <UserCard  comments={post.comments} id={post._id} key={i} image={post.image} title={post.title} text={post.description} 
+			time={post.time} by={post.user}/>
+		});
 
 		return(
 			<div>
+			<Container>
 			<Row>
 			<Col>
 			<Media body>
 			<Media heading>
-			Hello, {this.state.user.username}!
-			</Media>
+			Hello, {this.state.user.username}! 
 			Here are your posts:
-			<Button onClick={this.onBtnClick}>Try the method</Button>
+			</Media>
+			{UserCards}
 			</Media>
 			</Col>
-			TODO: 
-			image uploading with multer working in server(see sssf-week2)
-			<br/>
-			User's own posts on profile page and delete functionality for them
-			<br/>
-			Commenting on feed page cards, includes patch requests and server update postCard object.
         	</Row>
+        	</Container>
 			</div>
 			);
 	}

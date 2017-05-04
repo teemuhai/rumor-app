@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Client from '../Client.js'
+import Client from '../Client.js';
+
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 export default class Register extends Component {
 	handleSubmit(e){
@@ -15,19 +17,21 @@ export default class Register extends Component {
 	render(){
 		return (
 			<div>
-			<form id="registerForm" onSubmit={this.handleSubmit}>
+			<Form id="registerForm" onSubmit={this.handleSubmit}>
 			<h3>Register</h3>
-			<div className="form-group">
-			<input type="text" name="username" id="username" placeholder="Username"/>
-			</div>
-			<div className="form-group">
-			<input type="password" name="password" id="password" placeholder="Password"/>
-			</div>
-			<div className="form-group">
-			<input type="e-mail" name="email" id="email" placeholder="E-mail"/>
-			</div>
-			<input type="submit" value="Submit"/>
-			</form>
+			<FormGroup>
+			<Input type="text" name="username" id="username" placeholder="Username"/>
+			</FormGroup>
+			<FormGroup>
+			<Input type="password" name="password" id="password" placeholder="Password"/>
+			</FormGroup>
+			<FormGroup>
+			<Input type="e-mail" name="email" id="email" placeholder="E-mail"/>
+			</FormGroup>
+			<FormGroup>
+			<Button type="submit" value="Submit">Submit</Button>
+			</FormGroup>
+			</Form>
 			</div>
 			);
 	}

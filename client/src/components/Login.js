@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Client from '../Client.js';
 import * as UserActions from '../actions/UserActions';
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 export default class Login extends Component {
 	handleSubmit(e){
@@ -12,19 +13,23 @@ export default class Login extends Component {
 }
 		UserActions.loginPost(data);
 	}
+	//onSubmit={this.handleSubmit}
 
 	render(){
 		return (
 			<div>
-			<form id="loginForm" onSubmit={this.handleSubmit}>
+			<Form id="loginForm" onSubmit={this.handleSubmit}>
 			<h3>Login</h3>
-			<input type="text" name="username" placeholder="Username"/>
-			<br/> 
-			<input type="password" name="password" placeholder="Password"/>
-			<br/>
-			<br/>
-			<input type="submit" value="Submit"/>
-			</form>
+			<FormGroup>
+			<Input type="text" name="username" placeholder="Username"/>
+			</FormGroup>
+			<FormGroup>
+			<Input type="password" name="password" placeholder="Password"/>
+			</FormGroup>
+			<FormGroup>
+			<Button type="submit" value="Submit">Submit</Button>
+			</FormGroup>
+			</Form>
 			</div>
 			);
 	}

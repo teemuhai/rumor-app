@@ -1,5 +1,6 @@
 import {EventEmitter} from 'events';
 
+import * as UserActions from './actions/UserActions';
 import dispatcher from './dispatcher';
 
 class Client extends EventEmitter {
@@ -11,53 +12,8 @@ class Client extends EventEmitter {
 		this.userPosts = [];
 	}
 
-	register(data){
-	console.log('got to register method');
-	fetch('/register', {
-		method: 'POST',
-		body: data
-	}).then((resp) =>{
-		if(resp.ok){
-				console.log('got register response');
-				resp.json();			
-		}
-	}).then((resp) => {
-		console.log(resp);
-	});
-}
-
-	login(data){
-		console.log('got to login method');
-		fetch('/login', {
-			method: 'POST',
-			body: data
-		}).then((resp) => {
-			console.log('got login response ');
-			return resp.json();
-		}).then((resp) => {
-			if(resp.ok){
-			console.log(resp);
-			this.auth = resp.auth;
-			this.user = resp.user;	
-			}
-			else {
-				console.log('wrong username or password');
-			}
-		});
-	}
-	post(data){
-		console.log('got to post method');
-		fetch('/post', {
-			method: 'POST',
-			body: data
-		}).then((resp) => {
-			if(resp.ok){
-			console.log('got post response');
-			return resp.json();
-			}
-		}).then((resp) => {
-			console.log('resp json:' + resp);
-		});
+	getAuth(){
+		return this.auth;
 	}
 	getUser(){
 		
@@ -65,10 +21,12 @@ class Client extends EventEmitter {
 	}
 
 	getUserPosts(){
+		this.userPosts = this.userPosts.reverse();
 		return this.userPosts;
 	}
 	
 	getAll(){
+		this.posts = this.posts.reverse();
 		return this.posts;
 	}
 
@@ -83,13 +41,28 @@ class Client extends EventEmitter {
 				break;
 			case 'RECEIVED_USER_POSTS':
 				this.userPosts = action.posts;
-				break;
-			case 'DELETE_POSTS':
 				this.emit('change');
+				break;
+			case 'DELETE_POST':
+				const delData = {
+				userId: this.user._id
+				}
+				UserActions.getUserPosts(delData);
 				break;
 			case 'LOGIN_USER':
 				this.user = action.user;
 				this.auth = action.auth;
+				console.log('should now get the user posts pls');
+				const data = {
+				userId: this.user._id
+				}
+				UserActions.getUserPosts(data);
+				this.emit('change');
+				break;
+			case 'LOGOUT_USER':
+				this.user = {};
+				this.auth = false;
+				this.emit('change');
 				break;
 		}
 	}

@@ -18,7 +18,9 @@ export default class Post extends Component {
 		} 
 		const time = moment().format('MMMM Do YYYY, h:mm a');
 		data.append('time', time);
-		data.append('user', Client.getUser());
+		data.append('user', Client.getUser().username);
+		data.append('userId', Client.getUser()._id);
+
 		PostActions.createPost(data);
 	}
 
@@ -35,7 +37,7 @@ export default class Post extends Component {
 				<Input name="description" type="textarea" placeholder="Description"/>
 			</FormGroup>
 			<FormGroup>
-				<FileInput placeholder="Add Image..." />
+				<Input type="file" name="file"/>
 			</FormGroup>
 			<FormGroup>
 				<Button type="submit" color="primary">Submit</Button>

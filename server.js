@@ -13,6 +13,8 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const PostCard = require('./database/models/postCard.js');
+const path = require('path');
+const dotenv = require('dotenv').config();
 
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
@@ -22,16 +24,22 @@ const options = {
       cert: sslcert
 };
 
+const user = process.env.DB_USER;
+const pw = process.env.DB_PASS;
+const host = process.env.DB_HOST;
+
 /*mongoose.connect('mongodb://localhost/rumorapp');
 const db = mongoose.connection;
+
 */
-DB.connect('mongodb://localhost/rumorapp');
 
 const app = express();
+DB.connect('mongodb://' + user + ':'+ pw +'@' + host, app);
+
 // set up file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'files/original')
+        cb(null, 'files/')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname)); //Appending extension
@@ -40,17 +48,10 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true})); 
+app.use(bodyParser.json());
 app.use(bodyParser());
 app.use(cookieParser());
-app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.set('port', (process.env.PORT || 3001));
 
@@ -94,14 +95,24 @@ passport.use(new LocalStrategy(
   }));
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.getUserById(id, function(err, user) {
-    done(err, user);
-  });
+passport.deserializeUser(function(user, done) {
+  //User.getUserById(id, function(err, user) {
+    done(null, user);
+  //});
 });
+
+app.use(session({
+    secret: 'secret',
+    saveUninitialized: true,
+    resave: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.post('/register', upload.single('avatar'), (req, res) => {
   console.log('got a register request');
@@ -116,62 +127,117 @@ app.post('/register', upload.single('avatar'), (req, res) => {
       if(err) throw err;
       console.log('registeration succesful');
     });
-  res.send({status: 'OK'});
+  res.json({status: 'OK'});
 });
 
-app.post('/login', upload.single('avatar'),
+app.post('/login', upload.single('file'),
   passport.authenticate('local'),
   (req, res) => {
     //res.redirect('/');
     console.log('Authentication succesful');
-    req.session.user = req.user;
+    console.log(req.user);
+    // req.session.user = req.user;
     res.send({status: 'OK', auth: true, user: req.user});
   });
 
-app.post('/post', upload.single('postImage'), (req, res) => {
+app.post('/post', upload.single('file'), (req, res) => {
   console.log('got a postCard request');
-  console.log(req.body);
-  const newPostCard = new PostCard({
+  console.log(req.body);  
+  console.log(req.file);
+  const file = req.file;
+  if(file != null){
+    console.log('putting file in object');
+    req.body.image = 'files/' + file.filename;
+    const newPostCard = new PostCard({
     title: req.body.title,
     description: req.body.description,
-    time: req.body.time
+    time: req.body.time,
+    user: req.body.user,
+    userId: req.body.userId,
+    image: req.body.image
   });
   console.log('newPostCard here: ' + newPostCard);
   PostCard.createPostCard(newPostCard, (err, card) => {
-      if(err) throw err;
-      console.log('is this card? ' + card);
-      console.log('Created post to database!');
-    });
-  res.send({status: 'OK'});
+    console.log('herpderp?');
+    res.redirect(200, '/feed');
+  });
+  }
+  else {
+    console.log()
+    const newPostCard = new PostCard({
+    title: req.body.title,
+    description: req.body.description,
+    time: req.body.time,
+    user: req.body.user,
+    userId: req.body.userId
+  });
+  console.log('newPostCard here: ' + newPostCard);
+  PostCard.createPostCard(newPostCard, (err, card) => {
+    console.log('herpderp?');
+    res.redirect(200, '/feed');
+  });
+  }
 });
 
 app.post('/userposts',  upload.single('somePostImg'), (req, res) => {
   console.log('go to userposts request');
-  console.log(req.user);
-  PostCard.findOne({ user : {username: 'testUser', id: 123}}).exec((err, results) => {
-    if(err) throw err;
-    console.log(results);
-    res.send({posts: results});
+  console.log(req.body);
+  PostCard.getUserPostCards(req.body, (posts, err) => {
+    if(!err){
+      console.log(posts);
+      res.send(posts);
+    }
+    else {
+      console.log('error:');
+      console.log(err);
+    }
   });
 });
 
 app.post('/comment', (req, res) => {
   console.log('got to comment post');
+  console.log(req.body.user);
   console.log(req.body);
-  PostCard.updatePostCard(req.body);
+  PostCard.updatePostCard(req.body, (post, err) => {
+    if(!err){
+      res.send({status: 'ok', post: post});
+    }
+    else{
+      console.log('error: ');
+      console.log(err);
+    }
+  });
 });
 
-app.get('/logout', (req,res) => {
+app.get('/user', (req, res) => {
+  console.log('got a user request');
+  if(req.user === undefined){
+    res.send({status: false});
+  }
+  else {
+    res.json({status: true, user: req.user});
+  }
+});
+
+app.get('/logout', function(req, res){
+  console.log('got a logout get request');
   req.logout();
-  res.send({status: 'OK', logout: true});
+  res.redirect(200, '/');
 });
 
 app.get('/posts', (req, res) =>{
   console.log('received a getPosts request');
   PostCard.getPostCards().then((posts) => {
-    console.log(posts);
     res.send(posts);
   });
 });
 
+app.delete('/deletepost', (req, res) => {
+  console.log('received a deletePost request');
+  console.log(req.body);
+  PostCard.deletePostCard(req.body, (posts, err) => {
+    console.log('success?');
+    res.send({status: 'ok', posts: posts});
+  });
+});
 

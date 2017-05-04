@@ -1,0 +1,6 @@
+
+			TODO: 
+			image uploading with multer working in server(see sssf-week2)
+			
+			User's own posts on profile page and delete functionality for them
+		

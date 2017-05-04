@@ -27,10 +27,12 @@ export default class Feed extends Component {
 	componentWillUnmount(){
 		Client.removeListener('change', this.getPosts);
 	}
+
 	render(){
 		console.log(this.state.posts);
 		const Cards = this.state.posts.map((post, i) => {
-			return <Card  comments={post.comments} id={post._id} key={i} image={post.image} title={post.title} text={post.description} time={post.time} by={post.userId}/>
+			return <Card  comments={post.comments} id={post._id} key={i} image={post.image} title={post.title} text={post.description} 
+			time={post.time} by={post.user}/>
 		});
 		console.log('rendering feed here');
 		return (

@@ -1,5 +1,7 @@
 import dispatcher from '../dispatcher';
 
+import * as PostActions from '../actions/PostActions';
+
 export function createPost(data){
 	console.log('got to post method');
 		fetch('/post', {
@@ -8,11 +10,11 @@ export function createPost(data){
 		}).then((resp) => {
 			if(resp.ok){
 			console.log('got post response');
-			return resp.json();
+			return resp;
 			}
 		}).then((resp) => {
-			console.log('resp json:' + resp);
-			getPosts();
+			console.log(resp);
+			PostActions.getPosts();
 		});
 	 	/*dispatcher.dispatch({
 		type: 'CREATE_POST',
@@ -20,23 +22,21 @@ export function createPost(data){
 	});*/
 }
 
+
 export function commentPost(data){
 	console.log(data);
 	console.log('got to commentPost method');
 	fetch('/comment', {
-		method: 'PATCH',
-		body: data
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
 	}).then((resp) => {
 		return resp.json();
 	}).then((resp) => {
+		PostActions.getPosts();
 		console.log(resp);
-	});
-}
-
-export function deletePost(id){
-	dispatcher.dispatch({
-		type: 'DELETE_POST',
-		id,
 	});
 }
 
